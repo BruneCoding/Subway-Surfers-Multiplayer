@@ -1,0 +1,25 @@
+{
+  "rules": {
+    "mp-rooms":    { ".read": true, ".write": true },
+    "mp-lobbies":  { ".read": true, ".write": true },
+    "mp-chat": {
+      "global": {
+        ".read": true, ".indexOn": ["ts"],
+        "$id": { ".write": true, ".validate": "newData.val() === null || (newData.hasChildren(['n','t']) && newData.child('t').isString() && newData.child('t').val().length <= 120)" }
+      }
+    },
+    "mp-accounts": {
+      "$u": { ".read": true, ".write": "!data.exists()" }
+    },
+    "mp-profiles": { ".read": true, ".write": true },
+    "mp-friends":  { ".read": true, ".write": true },
+    "mp-presence": { ".read": true, ".write": true },
+    "mp-invites":  { ".read": true, ".write": true },
+    "mp-ranked": {
+      "queue":   { ".read": true, ".write": true, ".indexOn": ["ts", "mode"] },
+      "matches": { ".read": true, ".write": true }
+    },
+    "mp-persist":  { ".read": true, ".write": true },
+    "mp-admin":    { ".read": true, ".write": true }
+  }
+}

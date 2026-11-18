@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+/* Navigation guard: Poki's obfuscated bundles may contain a domain-lock that
+   redirects the page to poki.com/sitelock via a plain location assignment.
+   Block any top-level navigation to Poki lockdown URLs before it can happen.
+   Anchor clicks / social share links are unaffected (they do not use the
+   Location API). */
+(function () {
+  var LOCKDOWN = /(^|\.)poki\.com\/(sitelock|game-not-available)/i;
+  function guard(locObj, label) {
+    if (!locObj) return;
+    try {
+      var d = Object.getOwnPropertyDescriptor(Location.prototype, 'href');
+      if (d && d.set) Object.defineProperty(Location.prototype, 'href', {
+        get: d.get,
+        set: function (v) { if (LOCKDOWN.test(String(v))) { console.warn('[guard] blocked ' + label + '.href -> ' + v); return; } d.set.call(this, v); },
+        configurable: true
+      });
+      var oa = Location.prototype.assign, orp = Location.prototype.replace;
+      Location.prototype.assign = function (v) { if (LOCKDOWN.test(String(v))) { console.warn('[guard] blocked ' + label + '.assign(' + v + ')'); return; } return oa.call(this, v); };
+      Location.prototype.replace = function (v) { if (LOCKDOWN.test(String(v))) { console.warn('[guard] blocked ' + label + '.replace(' + v + ')'); return; } return orp.call(this, v); };
+    } catch (e) {}
+  }
+  guard(window.location, 'self');
+  try { guard(window.top === window ? null : window.top.location, 'top'); } catch (e) {}
+})();
+</script>
+<script>
+(function(){
+  var noop=function(){return Promise.resolve();};
+  var base={init:noop,gameLoadingFinished:function(){},gameLoadingStart:function(){},gameLoadingProgress:function(){},commercialBreak:noop,rewardedBreak:function(){return Promise.resolve(true);},
+    gameplayStart:function(){},gameplayStop:function(){},customEvent:function(){},happyTime:function(){},setDebug:function(){},setDebugTouchOverlayController:function(){},
+    getURLParam:function(){return null;},getLanguage:function(){return "en";},shareableURL:function(){return Promise.resolve("");},enableEventTracking:function(){},muteAd:function(){},
+    captureError:function(){},isAdBlocked:function(){return false;},movePokiifyIcon:function(){},sendHighscore:function(){},setPlayerAge:function(){},logError:function(){}};
+  var sdk=new Proxy(base,{get:function(t,p){if(p in t)return t[p];if(typeof p==="symbol"||p==="then")return undefined;return function(){return Promise.resolve();};}});
+  try{Object.defineProperty(window,"PokiSDK",{get:function(){return sdk;},set:function(){},configurable:false});}catch(e){window.PokiSDK=sdk;}
+  // never let any Poki SDK / sitelock script load
+  var bad=/poki(-gdn)?\.com\/.*(poki-sdk|sitelock)|poki-sdk.*\.js|sitelock/i;
+  var d=Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype,"src");
+  if(d&&d.set)Object.defineProperty(HTMLScriptElement.prototype,"src",{get:d.get,set:function(v){if(bad.test(String(v))){return;}d.set.call(this,v);},configurable:true});
+  var sa=Element.prototype.setAttribute;
+  Element.prototype.setAttribute=function(k,v){if(this instanceof HTMLScriptElement&&String(k).toLowerCase()==="src"&&bad.test(String(v)))return;return sa.apply(this,arguments);};
+  // never allow a sitelock-style redirect to poki.com (defence in depth on top of the stubbed SDK)
+  try{
+    var wo=window.open;
+    window.open=function(u){try{if(bad.test(String(u)))return null;}catch(e){}return wo.apply(window,arguments);};
+    document.addEventListener('click',function(e){
+      var a=e.target&&e.target.closest&&e.target.closest('a[href]');
+      if(a&&bad.test(a.getAttribute('href'))){e.preventDefault();e.stopPropagation();}
+    },true);
+    var _fh=fetch;
+    window.fetch=function(u){try{if(bad.test(String(u)))return Promise.resolve(new Response('',{status:200}));}catch(e){}return _fh.apply(window,arguments);};
+  }catch(e){}
+})();
+</script>
+
+    <meta charset="UTF-8">
+    <!-- real Poki SDK (and its sitelock) removed -->
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Font faces inlined to avoid Vite publicDir import error -->
+    <style>
+        @font-face {
+            font-family: 'titan-one';
+            src: url('./assets/font/titan-one.woff2') format('woff2'),
+                 url('./assets/font/titan-one.woff') format('woff');
+            font-style: normal;
+            font-stretch: normal;
+        }
+        @font-face {
+            font-family: 'lilita-one';
+            src: url('./assets/font/lilita-one.woff2') format('woff2'),
+                 url('./assets/font/lilita-one.woff') format('woff');
+            font-style: normal;
+            font-stretch: normal;
+        }
+        @font-face {
+            font-family: 'stencilia';
+            src: url('./assets/font/stencilia.woff2') format('woff2'),
+                 url('./assets/font/stencilia.woff') format('woff');
+            font-style: normal;
+            font-stretch: normal;
+        }
+    </style>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="viewport" content="height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui, viewport-fit=cover" />
+    <meta name="description" content="">
+
+    <link rel="preload" href="assets/preload/splash.webp" as="image" type="image/webp" fetchpriority="high">
+    <link rel="manifest" href="./assets/subwaysurfers-CPasN4VK.webmanifest">
+    <link rel="icon" href="assets/images/app-icon-16.png" type="image/png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/images/app-icon-114.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/images/app-icon-72.png">
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="assets/images/app-icon-57.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/images/app-icon-57.png">
+
+    <title>Subway Surfers Web</title>
+    <style>
+        body, html {
+            margin: 0;
+            height: 100%;
+            background-color: #0a0d14;
+            overflow: hidden;
+        }
+
+    </style>
+  <script type="module" crossorigin src="./assets/index-DP5nq4Ec.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/rolldown-runtime-Dw2cE7zH.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-CrfqOQ4G.js">
+  <link rel="modulepreload" crossorigin href="./assets/three-dhrglqPP.js">
+  <link rel="modulepreload" crossorigin href="./assets/ResourceBridge-CKwMWwZ0.js">
+  <link rel="modulepreload" crossorigin href="./assets/grind-CPn6vp7S.js">
+  <link rel="modulepreload" crossorigin href="./assets/pogo-wGRmkqbh.js">
+  <link rel="modulepreload" crossorigin href="./assets/reviveHoverboard-CbbeyMkJ.js">
+  <link rel="modulepreload" crossorigin href="./assets/reviveSmoke-HpGCK0HE.js">
+</head>
+<body>
+    <script>
+        window.NOSW = true;
+        window.GAME_CONFIG = {
+            pokiSdkDebug: false,
+            leaderboard: 'mockup',
+            bundlesPath: './bundles',
+        }
+        // Capture console for debugging
+        window._logs = [];
+        const _origWarn = console.warn;
+        const _origError = console.error;
+        const _origLog = console.log;
+        console.warn = function() { window._logs.push({t:'W', m: Array.from(arguments).map(String).join(' ')}); _origWarn.apply(console, arguments); };
+        console.error = function() { window._logs.push({t:'E', m: Array.from(arguments).map(String).join(' ')}); _origError.apply(console, arguments); };
+        console.log = function() { window._logs.push({t:'L', m: Array.from(arguments).map(String).join(' ')}); _origLog.apply(console, arguments); };
+        window.addEventListener('error', e => window._logs.push({t:'X', m: e.message + ' @ ' + e.filename + ':' + e.lineno}));
+        window.addEventListener('unhandledrejection', e => window._logs.push({t:'P', m: (e.reason?.message || String(e.reason))}));
+    </script>
+    <script>/* eslint-disable prefer-template */
+/* eslint-disable func-names */
+/* eslint-disable no-var */
+
+function LoadingBar()
+{
+    // Poki14: this object is the game's REAL progress source. It no longer draws
+    // anything itself - every update is forwarded to the minimal loading screen
+    // (mp-loader.js) which renders the logo + thin bar.
+    var total = 0;
+    var preInitActive = true;
+    var preInitStartedAt = performance.now();
+    var preInitFrame = 0;
+
+    function fwd(ratio, loadedRatio)
+    {
+        window.__MPL_LAST = { ratio: ratio, loadedRatio: loadedRatio, total: total };
+        if (window.MPLoader && window.MPLoader.set) window.MPLoader.set(ratio, loadedRatio, total);
+    }
+
+    function show()
+    {
+        if (preInitActive)
+        {
+            preInitStartedAt = performance.now();
+            preInitFrame = requestAnimationFrame(updatePreInitProgress);
+        }
+        fwd(0);
+    }
+
+    function hide()
+    {
+        cancelAnimationFrame(preInitFrame);
+        preInitActive = false;
+    }
+
+    function setTotal(mbs)
+    {
+        total = mbs;
+    }
+
+    function renderProgress(ratio, loadedRatio)
+    {
+        if (ratio < 0) ratio = 0;
+        if (ratio > 1) ratio = 1;
+        if (loadedRatio === undefined) loadedRatio = ratio;
+        fwd(ratio, loadedRatio);
+    }
+
+    function updatePreInitProgress(now)
+    {
+        if (preInitActive)
+        {
+            var elapsed = now - preInitStartedAt;
+            var ratio = 0.49 * (1 - Math.exp(-elapsed / 1600));
+            renderProgress(ratio);
+            preInitFrame = requestAnimationFrame(updatePreInitProgress);
+        }
+    }
+
+    function completePreInit()
+    {
+        if (!preInitActive) return;
+        preInitActive = false;
+        cancelAnimationFrame(preInitFrame);
+        renderProgress(0.5);
+    }
+
+    function setInitialProgress(ratio)
+    {
+        completePreInit();
+        if (ratio < 0) ratio = 0;
+        if (ratio > 1) ratio = 1;
+        renderProgress(0.5 + (ratio * 0.5), ratio);
+    }
+
+    function setProgress(ratio)
+    {
+        renderProgress(ratio);
+    }
+
+    show();
+    this.show = show;
+    this.hide = hide;
+    this.setTotal = setTotal;
+    this.setProgress = setProgress;
+    this.completePreInit = completePreInit;
+    this.setInitialProgress = setInitialProgress;
+}
+
+window.loadingBar = new LoadingBar();
+</script>
+    <script src="./mp-loader.js"></script>
+    <script src="./mp-config.js"></script>
+    <script src="./mp-net.js"></script>
+    <script src="./mp-p18.js?v=19"></script>
+    <script src="./mp-accounts.js"></script>
+    <script src="./mp-social.js"></script>
+    <script src="./mp-scene.js"></script>
+<script src="./mp-hook.js?v=19"></script>
+    <!-- Vite entry point -->
+</body>
+</html>
